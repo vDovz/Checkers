@@ -11,51 +11,27 @@ namespace Checkers
 
     public partial class MainWindow
     {
-        private int BoardSize = 8;
-        private ObservableCollection<CheckersPiece> field;
+        private GameBoard board;
         private GameLogic Rules;
-         
+
         public MainWindow()
         {
             InitializeComponent();
-
             DataContext = this;
-
             StartGame();
         }
 
         private void StartGame()
         {
-            field = new ObservableCollection<CheckersPiece>();
-            InitField();
-            CheckersBoard.ItemsSource = field;
-            Rules = new GameLogic(field, Player.White);
-        }
-
-        private void InitField()
-        {
-            for (var i = 0; i < BoardSize; i++)
-            {
-                for (var j = 0; j < BoardSize; j++)
-                {
-                    if ((i + j) % 2 == 0)
-                    {
-                        if (i < 3)
-                            field.Add(new CheckersPiece { Pos = new Point(j, i), Type = PieceType.Pawn, Player = Player.White });
-                        if (i > 4)
-                            field.Add(new CheckersPiece { Pos = new Point(j, i), Type = PieceType.Pawn, Player = Player.Black });
-                        if (i >= 3 && i <= 4)
-                            field.Add(new CheckersPiece { Pos = new Point(j, i), Type = PieceType.Free, Player = Player.None });
-                    }
-
-                }
-            }
+            GameBoard board = new GameBoard(new ObservableCollection<CheckersPiece>());
+            CheckersBoard.ItemsSource = GameBoard.Field;
+            Rules = new GameLogic(GameBoard.Field, Player.White);
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             CheckersPiece item = ((FrameworkElement)sender).DataContext as CheckersPiece;
-            int index = field.IndexOf(item);
+            int index = GameBoard.Field.IndexOf(item);
 
             if (Rules.Selected.IsSelected)
             {
@@ -91,7 +67,7 @@ namespace Checkers
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            Save.SaveToFile(field, Rules.CurrentPlayer);
+            Save.SaveToFile(GameBoard.Field, Rules.CurrentPlayer);
         }
 
         private void Restart_Click(object sender, RoutedEventArgs e)
@@ -101,7 +77,7 @@ namespace Checkers
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            Load.LoadFromFile(field, ref Rules.CurrentPlayer);
+            Load.LoadFromFile(GameBoard.Field, ref Rules.CurrentPlayer);
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)

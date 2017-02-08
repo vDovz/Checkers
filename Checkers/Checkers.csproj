@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\GameBoard.cs" />
     <Compile Include="SaveAndLoad\Save.cs" />
     <Compile Include="SaveAndLoad\Load.cs" />
     <Compile Include="Logic\GameLogic.cs" />
