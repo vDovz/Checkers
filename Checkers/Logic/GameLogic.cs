@@ -9,9 +9,9 @@ namespace Checkers.Logic
 {
     class GameLogic
     {
-        private static int BoardSize = 8;
+        private static int _boardSize = 8;
 
-        private ObservableCollection<CheckersPiece> field;
+        private ObservableCollection<CheckersPiece> _field;
         public Player CurrentPlayer;
         public Info Selected = new Info(false);
         public bool AttackContinued = false;
@@ -22,7 +22,7 @@ namespace Checkers.Logic
 
         public GameLogic(ObservableCollection<CheckersPiece> field, Player player)
         {
-            this.field = field;
+            this._field = field;
             CurrentPlayer = player;
         }
 
@@ -33,18 +33,18 @@ namespace Checkers.Logic
 
         private void MakeQueen(int index)
         {
-            if (CurrentPlayer == Player.White && field[index].Pos.Y == BoardSize - 1)
-                field[index].Type = PieceType.Queen;
-            if (CurrentPlayer == Player.Black && field[index].Pos.Y == 0)
-                field[index].Type = PieceType.Queen;
+            if (CurrentPlayer == Player.White && _field[index].Pos.Y == _boardSize - 1)
+                _field[index].Type = PieceType.Queen;
+            if (CurrentPlayer == Player.Black && _field[index].Pos.Y == 0)
+                _field[index].Type = PieceType.Queen;
         }
 
         private void ChangeStates(Info selected, CheckersPiece item2, int index2)
         {
-            field[selected.Index].Player = item2.Player;
-            field[selected.Index].Type = item2.Type;
-            field[index2].Player = selected.Player;
-            field[index2].Type = selected.Type;
+            _field[selected.Index].Player = item2.Player;
+            _field[selected.Index].Type = item2.Type;
+            _field[index2].Player = selected.Player;
+            _field[index2].Type = selected.Type;
         }
 
         private void RemoveDensePawn(Info selected, CheckersPiece item)
@@ -66,7 +66,7 @@ namespace Checkers.Logic
                 x += horizontally;
                 y += vertically;
 
-                while (GameBoard.IsInBoard(x + horizontally, y + vertically) && field[GameBoard.ColRowToPos(x, y)].Player == Player.None)
+                while (GameBoard.IsInBoard(x + horizontally, y + vertically) && _field[GameBoard.ColRowToPos(x, y)].Player == Player.None)
                 {
                     x += horizontally;
                     y += vertically;
@@ -77,8 +77,8 @@ namespace Checkers.Logic
 
         private void RemovePawn(int index)
         {
-            field[index].Type = PieceType.Free;
-            field[index].Player = Player.None;
+            _field[index].Type = PieceType.Free;
+            _field[index].Player = Player.None;
         }
 
         public bool MovePlayer(CheckersPiece item, int index)
@@ -134,19 +134,19 @@ namespace Checkers.Logic
                 return false;
             }
 
-            if (field[GameBoard.ColRowToPos(newColumn, newRow)].Player == enemy
-                && field[GameBoard.ColRowToPos(column, row)].Player == CurrentPlayer)
+            if (_field[GameBoard.ColRowToPos(newColumn, newRow)].Player == enemy
+                && _field[GameBoard.ColRowToPos(column, row)].Player == CurrentPlayer)
             {
                 int endRow = newRow + dirY;
                 int endColumn = newColumn + dirX;
-                return (GameBoard.IsInBoard(endColumn, endRow) && field[GameBoard.ColRowToPos(endColumn, endRow)].Type == PieceType.Free);
+                return (GameBoard.IsInBoard(endColumn, endRow) && _field[GameBoard.ColRowToPos(endColumn, endRow)].Type == PieceType.Free);
             }
             return false;
         }
 
         public bool CanJump(int column, int row)
         {
-            CheckersPiece piece = field[GameBoard.ColRowToPos(column, row)];
+            CheckersPiece piece = _field[GameBoard.ColRowToPos(column, row)];
             var enemy = (CurrentPlayer == Player.White) ? Player.Black : Player.White;
 
             return CanJump(column, row, 1, -1)
@@ -161,12 +161,12 @@ namespace Checkers.Logic
         {
             if (piece.Type == PieceType.Queen && CurrentPlayer == piece.Player)
             {
-                for (int i = column + 1, j = row + 1; i < BoardSize - 1 && j < BoardSize - 1; i++, j++)
+                for (int i = column + 1, j = row + 1; i < _boardSize - 1 && j < _boardSize - 1; i++, j++)
                 {
-                    if (field[GameBoard.ColRowToPos(i, j)].Player != Player.None)
+                    if (_field[GameBoard.ColRowToPos(i, j)].Player != Player.None)
                     {
-                        if (field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i + 1, j + 1))
-                            if (field[GameBoard.ColRowToPos(i + 1, j + 1)].Type == PieceType.Free)
+                        if (_field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i + 1, j + 1))
+                            if (_field[GameBoard.ColRowToPos(i + 1, j + 1)].Type == PieceType.Free)
                                 return true;
                             else break;
                         else
@@ -176,12 +176,12 @@ namespace Checkers.Logic
                     }
                 }
 
-                for (int i = column - 1, j = row + 1; i > 0 && j < BoardSize; i--, j++)
+                for (int i = column - 1, j = row + 1; i > 0 && j < _boardSize; i--, j++)
                 {
-                    if ((field[GameBoard.ColRowToPos(i, j)].Player != Player.None))
+                    if ((_field[GameBoard.ColRowToPos(i, j)].Player != Player.None))
                     {
-                        if (field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i - 1, j + 1))
-                            if (field[GameBoard.ColRowToPos(i - 1, j + 1)].Type == PieceType.Free)
+                        if (_field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i - 1, j + 1))
+                            if (_field[GameBoard.ColRowToPos(i - 1, j + 1)].Type == PieceType.Free)
                                 return true;
                             else break;
                         else
@@ -191,12 +191,12 @@ namespace Checkers.Logic
                     }
                 }
 
-                for (int i = column + 1, j = row - 1; i < BoardSize && j > 0; i++, j--)
+                for (int i = column + 1, j = row - 1; i < _boardSize && j > 0; i++, j--)
                 {
-                    if (field[GameBoard.ColRowToPos(i, j)].Player != Player.None)
+                    if (_field[GameBoard.ColRowToPos(i, j)].Player != Player.None)
                     {
-                        if (field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i + 1, j - 1))
-                            if (field[GameBoard.ColRowToPos(i - 1, j + 1)].Type == PieceType.Free)
+                        if (_field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i + 1, j - 1))
+                            if (_field[GameBoard.ColRowToPos(i - 1, j + 1)].Type == PieceType.Free)
                                 return true;
                             else
                                 break;
@@ -209,10 +209,10 @@ namespace Checkers.Logic
 
                 for (int i = column - 1, j = row - 1; i > 0 && j > 0; i--, j--)
                 {
-                    if (field[GameBoard.ColRowToPos(i, j)].Player != Player.None)
+                    if (_field[GameBoard.ColRowToPos(i, j)].Player != Player.None)
                     {
-                        if (field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i - 1, j - 1))
-                            if (field[GameBoard.ColRowToPos(i - 1, i - 1)].Type == PieceType.Free)
+                        if (_field[GameBoard.ColRowToPos(i, j)].Player == enemy && GameBoard.IsInBoard(i - 1, j - 1))
+                            if (_field[GameBoard.ColRowToPos(i - 1, i - 1)].Type == PieceType.Free)
                                 return true;
                             else
                                 break;
@@ -228,8 +228,8 @@ namespace Checkers.Logic
 
         public int IsValidMove(int from, int to)
         {
-            CheckersPiece pieceFrom = field[from];
-            CheckersPiece pieceTo = field[to];
+            CheckersPiece pieceFrom = _field[from];
+            CheckersPiece pieceTo = _field[to];
 
             int startCol = GameBoard.PosToCol(from);
             int startRow = GameBoard.PosToRow(from);
@@ -263,7 +263,7 @@ namespace Checkers.Logic
                     if (dirX > 0 && dirY > 0)
                         for (int i = startCol + 1, j = startRow + 1; i < endCol && j < endRow; i++, j++)
                         {
-                            if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
+                            if (!(_field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                             {
                                 return -1;
                             }
@@ -271,7 +271,7 @@ namespace Checkers.Logic
                     else if (dirX < 0 && dirY > 0)
                         for (int i = startCol - 1, j = startRow + 1; i > endCol && j < endRow; i--, j++)
                         {
-                            if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
+                            if (!(_field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                             {
                                 return -1;
                             }
@@ -279,7 +279,7 @@ namespace Checkers.Logic
                     else if (dirX > 0 && dirY < 0)
                         for (int i = startCol + 1, j = startRow - 1; i < endCol && j > endRow; i++, j--)
                         {
-                            if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
+                            if (!(_field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                             {
                                 return -1;
                             }
@@ -287,7 +287,7 @@ namespace Checkers.Logic
                     else if (dirX < 0 && dirY < 0)
                         for (int i = startCol - 1, j = startRow - 1; i > endCol && j > endRow; i--, j--)
                         {
-                            if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
+                            if (!(_field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                             {
                                 return -1;
                             }
@@ -331,7 +331,7 @@ namespace Checkers.Logic
                 jumps = new List<Move>();
                 col = GameBoard.PosToCol(i);
                 row = GameBoard.PosToRow(i);
-                var tempJumps = AttackWay(col, row, field);
+                var tempJumps = AttackWay(col, row, _field);
                 if (tempJumps.Count > maxjump.Count)
                 {
                     maxjump = new List<Move>(tempJumps);
@@ -374,7 +374,7 @@ namespace Checkers.Logic
                     column += dirX;
                     row += dirY;
 
-                    while (GameBoard.IsInBoard(column + dirX, row + dirY) && field[GameBoard.ColRowToPos(column, row)].Player == Player.None)
+                    while (GameBoard.IsInBoard(column + dirX, row + dirY) && _field[GameBoard.ColRowToPos(column, row)].Player == Player.None)
                     {
                         column += dirX;
                         row += dirY;
@@ -403,7 +403,7 @@ namespace Checkers.Logic
             if (field[GameBoard.ColRowToPos(column, row)].Type == PieceType.Queen
                && field[GameBoard.ColRowToPos(column, row)].Player == CurrentPlayer)
             {
-                for (int i = column + 1, j = row + 1; i < BoardSize && j < BoardSize; i++, j++)
+                for (int i = column + 1, j = row + 1; i < _boardSize && j < _boardSize; i++, j++)
                 {
                     if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                     {
@@ -420,7 +420,7 @@ namespace Checkers.Logic
                     }
                 }
 
-                for (int i = column + 1, j = row - 1; i < BoardSize && j >= 0; i++, j--)
+                for (int i = column + 1, j = row - 1; i < _boardSize && j >= 0; i++, j--)
                 {
                     if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                     {
@@ -437,7 +437,7 @@ namespace Checkers.Logic
                     }
                 }
 
-                for (int i = column - 1, j = row + 1; i >= 0 && j < BoardSize; i--, j++)
+                for (int i = column - 1, j = row + 1; i >= 0 && j < _boardSize; i--, j++)
                 {
                     if (!(field[GameBoard.ColRowToPos(i, j)].Type == PieceType.Free))
                     {

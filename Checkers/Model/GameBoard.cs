@@ -17,7 +17,6 @@ namespace Checkers.Model
 
         public GameBoard(ObservableCollection<CheckersPiece> field)
         {
-            Field = field;
             InitField();
         }
         private void InitField()

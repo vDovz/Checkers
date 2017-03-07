@@ -11,8 +11,7 @@ namespace Checkers
 
     public partial class MainWindow
     {
-        private GameBoard board;
-        private GameLogic Rules;
+        private GameLogic _logic;
 
         public MainWindow()
         {
@@ -25,7 +24,7 @@ namespace Checkers
         {
             GameBoard board = new GameBoard(new ObservableCollection<CheckersPiece>());
             CheckersBoard.ItemsSource = GameBoard.Field;
-            Rules = new GameLogic(GameBoard.Field, Player.White);
+            _logic = new GameLogic(GameBoard.Field, Player.White);
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
@@ -33,41 +32,41 @@ namespace Checkers
             CheckersPiece item = ((FrameworkElement)sender).DataContext as CheckersPiece;
             int index = GameBoard.Field.IndexOf(item);
 
-            if (Rules.Selected.IsSelected)
+            if (_logic.Selected.IsSelected)
             {
-                if (item.Player == Rules.CurrentPlayer && !Rules.AttackContinued)
+                if (item.Player == _logic.CurrentPlayer && !_logic.AttackContinued)
                 {
                     UnSelect(item, index);
                 }
                 else
                 {
-                    if (!Rules.MovePlayer(item, index))
+                    if (!_logic.MovePlayer(item, index))
                         return;
                 }
             }
             else
             {
-                if (item.Player != Rules.CurrentPlayer || Rules.AttackContinued)
+                if (item.Player != _logic.CurrentPlayer || _logic.AttackContinued)
                 {
                     return;
                 }
                 item.IsSelected = true;
-                Rules.Selected.ChangeFields(item.Player, item.Type, item.Pos, index, true);
+                _logic.Selected.ChangeFields(item.Player, item.Type, item.Pos, index, true);
             }
         }
 
         private void UnSelect(CheckersPiece item, int index)
         {
-            if (Rules.Selected.Index == index)
+            if (_logic.Selected.Index == index)
             {
                 item.IsSelected = false;
-                Rules.Selected.ChangeSelected();
+                _logic.Selected.ChangeSelected();
             }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            Save.SaveToFile(GameBoard.Field, Rules.CurrentPlayer);
+            Save.SaveToFile(GameBoard.Field, _logic.CurrentPlayer);
         }
 
         private void Restart_Click(object sender, RoutedEventArgs e)
@@ -77,7 +76,7 @@ namespace Checkers
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            Load.LoadFromFile(GameBoard.Field, ref Rules.CurrentPlayer);
+            Load.LoadFromFile(GameBoard.Field, ref _logic.CurrentPlayer);
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
