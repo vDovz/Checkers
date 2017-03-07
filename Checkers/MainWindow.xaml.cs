@@ -12,6 +12,7 @@ namespace Checkers
     public partial class MainWindow
     {
         private GameLogic _logic;
+        private GameBoard _board;
 
         public MainWindow()
         {
@@ -22,15 +23,15 @@ namespace Checkers
 
         private void StartGame()
         {
-            GameBoard board = new GameBoard(new ObservableCollection<CheckersPiece>());
-            CheckersBoard.ItemsSource = GameBoard.Field;
-            _logic = new GameLogic(GameBoard.Field, Player.White);
+            _board = new GameBoard(new ObservableCollection<CheckersPiece>());
+            CheckersBoard.ItemsSource = _board.Field;
+            _logic = new GameLogic(_board.Field, Player.White);
         }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             CheckersPiece item = ((FrameworkElement)sender).DataContext as CheckersPiece;
-            int index = GameBoard.Field.IndexOf(item);
+            int index = _board.Field.IndexOf(item);
 
             if (_logic.Selected.IsSelected)
             {
@@ -66,7 +67,7 @@ namespace Checkers
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            Save.SaveToFile(GameBoard.Field, _logic.CurrentPlayer);
+            Save.SaveToFile(_board.Field, _logic.CurrentPlayer);
         }
 
         private void Restart_Click(object sender, RoutedEventArgs e)
@@ -76,7 +77,7 @@ namespace Checkers
 
         private void btnLoad_Click(object sender, RoutedEventArgs e)
         {
-            Load.LoadFromFile(GameBoard.Field, ref _logic.CurrentPlayer);
+            Load.LoadFromFile(_board.Field, ref _logic.CurrentPlayer);
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)

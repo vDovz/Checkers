@@ -13,10 +13,11 @@ namespace Checkers.Model
     {
         private static int BoardSize = 8;
 
-        public static ObservableCollection<CheckersPiece> Field { get; set; }
+        public ObservableCollection<CheckersPiece> Field { get; set; }
 
         public GameBoard(ObservableCollection<CheckersPiece> field)
         {
+            Field = field;
             InitField();
         }
         private void InitField()
