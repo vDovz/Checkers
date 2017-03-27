@@ -58,11 +58,15 @@ namespace Checkers
 
         private void UnSelect(CheckersPiece item, int index)
         {
-            if (_logic.Selected.Index == index)
+            if(_logic.Selected.Player == _logic.Field[index].Player)
             {
-                item.IsSelected = false;
+                item.IsSelected = true;
+                _logic.Field[_logic.Selected.Index].IsSelected = false;
                 _logic.Selected.ChangeSelected();
+                _logic.Selected.ChangeFields(item.Player, item.Type, item.Pos, index, true);
             }
+
+
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
